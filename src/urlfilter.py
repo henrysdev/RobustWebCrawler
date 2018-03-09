@@ -4,6 +4,7 @@
 import time
 
 FRESHOLD = 5000000
+IMG_TYPES = ['.png','.PNG','.jpg','.JPG','.gif','.GIF','.JPEG','.jpeg']
 
 class UrlFilter():
     def __init__(self, master):
@@ -17,6 +18,12 @@ class UrlFilter():
         else:
             return True
 
+    def isImageFile(self, url):
+        for _ in IMG_TYPES:
+            if url.endswith(_):
+                return True
+        return False
+
     def addUrl(self, url):
         timestamp = time.time()
         print(timestamp)
@@ -26,14 +33,17 @@ class UrlFilter():
     def vetUrl(self, url):
         print("Filter URL: {}".format(url))
         for baseUrl in self.seedSet:
-            if url[:4] != "http":
-                url = "{}{}".format(baseUrl, url)
-            print(url)
-            if url.startswith(baseUrl):
-                if self.isDuplicate(url) == False:
-                    self.addUrl(url)
+            tmpUrl = url
+            if tmpUrl[:4] != "http":
+                tmpUrl = "{}{}".format(baseUrl, tmpUrl)
+            if tmpUrl.startswith(baseUrl):
+                if self.isImageFile(tmpUrl):
+                    self.master.reportImage(tmpUrl)
+                    return
+                if self.isDuplicate(tmpUrl) == False:
+                    self.addUrl(tmpUrl)
                 else:
-                    lastTime = self.foundUrls[url]
+                    lastTime = self.foundUrls[tmpUrl]
                     print("last time crawled: {}".format(lastTime))
                     if abs(time.time() - lastTime) > FRESHOLD: # check for freshness
-                        self.addUrl(url)
+                        self.addUrl(tmpUrl)

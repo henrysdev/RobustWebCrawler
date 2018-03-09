@@ -10,6 +10,7 @@ class PageArchive():
     def isDuplContent(self, content):
         m = md5()
         m.update(content.encode('utf-8'))
+        m = m.hexdigest()
         if m in self.archive:
             return True
         else:
@@ -18,4 +19,9 @@ class PageArchive():
     def addPage(self, content):
         m = md5()
         m.update(content.encode('utf-8'))
+        m = m.hexdigest()
         self.archive[m] = content
+        print("\n\n\n")
+        print("ADDING CONTENT: {}\nCURRENT DICT:{}".format(content, self.archive))
+        print("\n\n\n")
+        #print(self.archive)

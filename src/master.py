@@ -7,6 +7,7 @@ import sys
 from spider import Spider
 from parser import Parser
 from urlfilter import UrlFilter
+from pagearchive import PageArchive
 from queue import *
 
 
@@ -26,29 +27,32 @@ class UrlFrontier():
     def isEmpty(self):
         return self.urlQueue.empty()
 
-    def __str__(self):
-        rtnStr = ""
-        for elem in list(self.urlQueue):
-            rtnStr += str(elem)
-        return rtnStr
-
 
 class MasterNode():
     def __init__(self, seedSet):
         self.seedSet = seedSet
         self.urlFront = UrlFrontier(seedSet)
-        self.urlfilter = UrlFilter(self)
-        self.parser = Parser(master=self, urlfilter=self.urlfilter)
-        self.spider = Spider(master=self, parser=self.parser)
+        self.pageArchive = PageArchive()
+        self.urlFilter = UrlFilter(self)
+        self.parser = Parser(self, 
+                             self.urlFilter, 
+                             self.pageArchive)
+        self.spider = Spider(self, self.parser)
         self.brokenLinks = []
         self.imageFiles = []
 
-    def run(self):
+    def run(self, N):
+        i = 0
         while self.urlFront.isEmpty() == False:
-            url = self.urlFront.get()
-            print(url)
-            self.spider.crawl(url)
-            sleep(2)
+            if i < N:
+                url = self.urlFront.get()
+                print(url)
+                self.spider.crawl(url)
+                i+=1
+                print("i", i)
+                sleep(2)
+            else:
+                return
 
     def addToFront(self, url):
         self.urlFront.put(url)
@@ -56,12 +60,21 @@ class MasterNode():
     def reportBroken(self, url):
         self.brokenLinks.append(url)
 
+    def reportImage(self, url):
+        self.imageFiles.append(url)
 
-def init(seedSet):
+
+def init(seedSet, N):
     master = MasterNode(seedSet)
-    master.run()
+    master.run(N)
+    print("\n\n\n\nDONE")
+    print("broken links: {}".format(master.brokenLinks))
+    print("image files: {}".format(master.imageFiles))
+    print("page archive: {}".format(master.pageArchive.archive))
 
 
 if __name__ == "__main__":
-    SEEDSET = ["https://s2.smu.edu/~fmoore/"]
-    init(SEEDSET)
+    if len(sys.argv) == 2:
+        N = int(sys.argv[1])
+        SEEDSET = ["https://s2.smu.edu/~fmoore/"]
+        init(SEEDSET, N)
