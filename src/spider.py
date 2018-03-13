@@ -3,6 +3,8 @@
 
 from urllib.request import urlopen
 
+TXT_TYPES = ['.txt','.htm','.html','.php']
+
 class Spider():
     def __init__(self, master, parser):
         self.master = master
@@ -18,6 +20,9 @@ class Spider():
         return page
 
     def crawl(self, url):
-        content = self.webpageToHtml(url)
-        if content is not None:
-            self.parser.parse(content)
+        # TODO optimize time complexity
+        for in TXT_TYPES:
+            if t in url:
+                content = self.webpageToHtml(url)
+                if content is not None:
+                    self.parser.parse(content)
