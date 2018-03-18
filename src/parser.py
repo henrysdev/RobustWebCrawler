@@ -2,8 +2,9 @@
 # hwarren@smu.edu
 
 from bs4 import BeautifulSoup
-import indexer
 import re
+
+import indexer
 
 class Parser():
     def __init__(self, master, urlfilter, pagearchive, indexer):
@@ -13,11 +14,13 @@ class Parser():
         self.indexer = indexer
         self.indexable_types = ['.txt','.htm','.html','.php']
 
+
     def extractUrls(self, soup):
         for a in soup.find_all('a', href=True):
             #print("Found the URL: {}".format(a['href']))
             foundUrl = a['href']
             self.urlfilter.vetUrl(foundUrl)
+
 
     def contentVet(self, element):
         if "\n" in element:
@@ -25,17 +28,20 @@ class Parser():
         else:
             return True
 
+
     def cleanContent(self, texts):
         for i in range(len(texts)):
             texts[i] = texts[i].replace('\n',' ')
             texts[i] = texts[i].replace('\r',' ')
         return texts
 
+
     def isIndexablePage(self, url):
         for t in self.indexable_types:
             if t in url or t.upper() in url:
                 return True
         return False
+
 
     def parse(self, pageHtml, url):
         soup = BeautifulSoup(pageHtml, 'lxml')

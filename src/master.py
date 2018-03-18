@@ -13,7 +13,7 @@ from pagearchive import PageArchive
 from indexer import Indexer
 
 
-
+# queue for holding found urls to be crawled
 class UrlFrontier():
     def __init__(self, seedSet):
         self.urlQueue = Queue()
@@ -21,16 +21,20 @@ class UrlFrontier():
             self.urlQueue.put(url)
         print(self.urlQueue)
 
+
     def put(self, url):
         self.urlQueue.put(url)
 
+
     def get(self):
         return self.urlQueue.get()
+
 
     def isEmpty(self):
         return self.urlQueue.empty()
 
 
+# managing object for controlling data flow in the crawler 
 class MasterNode():
     def __init__(self, seedSet):
         self.seedSet = seedSet
@@ -47,6 +51,7 @@ class MasterNode():
         self.imageFiles = []
         self.outgoingLinks = []
 
+
     def run(self, N):
         i = 0
         while self.urlFront.isEmpty() == False:
@@ -60,31 +65,42 @@ class MasterNode():
             else:
                 return
 
+
     def addToFront(self, url):
         self.urlFront.put(url)
+
 
     def reportBroken(self, url):
         self.brokenLinks.append(url)
 
+
     def reportImage(self, url):
         self.imageFiles.append(url)
+
 
     def reportOutgoing(self, url):
         self.outgoingLinks.append(url)
 
 
-def init(seedSet, N):
-    master = MasterNode(seedSet)
-    master.run(N)
+def outputResults(master):
     print("broken links: {}".format(master.brokenLinks))
     print("image files: {}".format(master.imageFiles))
+    print("outgoing links: {}".format(master.outgoingLinks))
     print("page archive: {}".format(master.pageArchive.archive))
     print("most frequent 20 words (tf): {}".format(master.indexer.getNMostFrequent(20,"tf")))
     print("most frequent 20 words (df): {}".format(master.indexer.getNMostFrequent(20,"df")))
 
 
+def main(args):
+    if len(args) != 2:
+        print("incorrect arguments. exiting...")
+    N = int(args[1])
+    seedset = ["https://s2.smu.edu/~fmoore/"]
+    master = MasterNode(seedset)
+    master.run(N)
+    outputResults(master)
+
+
 if __name__ == "__main__":
-    if len(sys.argv) == 2:
-        N = int(sys.argv[1])
-        SEEDSET = ["https://s2.smu.edu/~fmoore/"]
-        init(SEEDSET, N)
+    main(sys.argv)
+    

@@ -7,6 +7,7 @@ class PageArchive():
     def __init__(self):
         self.archive = {}
 
+
     def isDuplContent(self, content):
         m = md5()
         m.update(content.encode('utf-8'))
@@ -16,10 +17,12 @@ class PageArchive():
         else:
             return False
 
+
     def genMd5(self, content):
         m = md5()
         m.update(content.encode('utf-8'))
         return m.hexdigest()
+
 
     def addPage(self, url, content):
         hashkey = self.genMd5(content)

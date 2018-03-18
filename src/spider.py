@@ -8,6 +8,7 @@ class Spider():
         self.master = master
         self.parser = parser
 
+
     def webpageToHtml(self, url):
         try:
             page = urlopen(url).read()
@@ -16,6 +17,7 @@ class Spider():
             self.master.reportBroken(url)
             return None
         return page
+
 
     def crawl(self, url):
         # TODO optimize time complexity
