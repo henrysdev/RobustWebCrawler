@@ -26,12 +26,10 @@ class UrlFilter():
 
     def addUrl(self, url):
         timestamp = time.time()
-        print(timestamp)
         self.foundUrls[url] = timestamp
         self.master.addToFront(url)
 
     def vetUrl(self, url):
-        print("Filter URL: {}".format(url))
         for baseUrl in self.seedSet:
             tmpUrl = url
             if tmpUrl[:4] != "http":
@@ -44,6 +42,6 @@ class UrlFilter():
                     self.addUrl(tmpUrl)
                 else:
                     lastTime = self.foundUrls[tmpUrl]
-                    print("last time crawled: {}".format(lastTime))
+                    #print("last time crawled: {}".format(lastTime))
                     if abs(time.time() - lastTime) > FRESHOLD: # check for freshness
                         self.addUrl(tmpUrl)

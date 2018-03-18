@@ -22,19 +22,28 @@ class Indexer():
                 self.termFreqMatrix[docId][word] += 1
         self.docNum += 1
 
-    def getNMostFrequent(self, N):
+    def getNMostFrequent(self, N, mode="tf"):
+        if mode not in ["tf", "df"]:
+            print("invalid mode passed to getNMostFrequent. Returning")
+            return
         allWords = {}
         for doc in self.termFreqMatrix:
             for word in self.termFreqMatrix[doc]:
                 if word in allWords:
-                    allWords[word] += self.termFreqMatrix[doc][word]
+                    if mode == "tf":
+                        allWords[word] += self.termFreqMatrix[doc][word]
+                    if mode == "df":
+                        allWords[word] += 1
                 else:
-                    allWords[word] = self.termFreqMatrix[doc][word]
+                    if mode == "tf":
+                        allWords[word] = self.termFreqMatrix[doc][word]
+                    if mode == "df":
+                        allWords[word] = 1
         rankedWords = []
-        getKey = lambda x: x[1]
         for word in allWords:
             rankedWords.append((word,allWords[word]))
-            rankedWords = sorted(rankedWords, getKey, True)
+
+        rankedWords.sort(key=lambda x: x[1], reverse=True)
 
         if N > len(rankedWords):
             return rankedWords

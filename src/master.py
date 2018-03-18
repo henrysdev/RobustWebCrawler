@@ -76,11 +76,11 @@ class MasterNode():
 def init(seedSet, N):
     master = MasterNode(seedSet)
     master.run(N)
-    print("\n\n\n\nDONE")
     print("broken links: {}".format(master.brokenLinks))
     print("image files: {}".format(master.imageFiles))
     print("page archive: {}".format(master.pageArchive.archive))
-    print("most frequent 20 words: {}".format(master.indexer.getNMostFrequent(20)))
+    print("most frequent 20 words (tf): {}".format(master.indexer.getNMostFrequent(20,"tf")))
+    print("most frequent 20 words (df): {}".format(master.indexer.getNMostFrequent(20,"df")))
 
 
 if __name__ == "__main__":
