@@ -16,12 +16,11 @@ class PageArchive():
         else:
             return False
 
-    def addPage(self, content):
+    def genMd5(self, content):
         m = md5()
         m.update(content.encode('utf-8'))
-        m = m.hexdigest()
-        self.archive[m] = content
-        print("\n\n\n")
-        print("ADDING CONTENT: {}\nCURRENT DICT:{}".format(content, self.archive))
-        print("\n\n\n")
-        #print(self.archive)
+        return m.hexdigest()
+
+    def addPage(self, url, content):
+        hashkey = self.genMd5(content)
+        self.archive[hashkey] = url

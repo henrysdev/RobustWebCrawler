@@ -4,11 +4,14 @@
 from bs4 import BeautifulSoup
 from time import sleep
 import sys
+from queue import *
+
 from spider import Spider
 from parser import Parser
 from urlfilter import UrlFilter
 from pagearchive import PageArchive
-from queue import *
+from indexer import Indexer
+
 
 
 class UrlFrontier():
@@ -34,19 +37,22 @@ class MasterNode():
         self.urlFront = UrlFrontier(seedSet)
         self.pageArchive = PageArchive()
         self.urlFilter = UrlFilter(self)
+        self.indexer = Indexer(self)
         self.parser = Parser(self, 
                              self.urlFilter, 
-                             self.pageArchive)
+                             self.pageArchive,
+                             self.indexer)
         self.spider = Spider(self, self.parser)
         self.brokenLinks = []
         self.imageFiles = []
+        self.outgoingLinks = []
 
     def run(self, N):
         i = 0
         while self.urlFront.isEmpty() == False:
             if i < N:
                 url = self.urlFront.get()
-                print(url)
+                print("curr URL: {}".format(url))
                 self.spider.crawl(url)
                 i+=1
                 print("i", i)
@@ -63,6 +69,9 @@ class MasterNode():
     def reportImage(self, url):
         self.imageFiles.append(url)
 
+    def reportOutgoing(self, url):
+        self.outgoingLinks.append(url)
+
 
 def init(seedSet, N):
     master = MasterNode(seedSet)
@@ -71,6 +80,7 @@ def init(seedSet, N):
     print("broken links: {}".format(master.brokenLinks))
     print("image files: {}".format(master.imageFiles))
     print("page archive: {}".format(master.pageArchive.archive))
+    print("most frequent 20 words: {}".format(master.indexer.getNMostFrequent(20)))
 
 
 if __name__ == "__main__":

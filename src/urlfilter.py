@@ -4,7 +4,7 @@
 import time
 
 FRESHOLD = 5000000
-IMG_TYPES = ['.png','.PNG','.jpg','.JPG','.gif','.GIF','.JPEG','.jpeg']
+IMG_TYPES = ['.png','.jpg','.gif','.jpeg']
 
 class UrlFilter():
     def __init__(self, master):
@@ -20,7 +20,7 @@ class UrlFilter():
 
     def isImageFile(self, url):
         for _ in IMG_TYPES:
-            if url.endswith(_):
+            if url.endswith(_) or url.endswith(_.upper()):
                 return True
         return False
 

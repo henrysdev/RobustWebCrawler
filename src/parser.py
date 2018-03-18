@@ -2,12 +2,16 @@
 # hwarren@smu.edu
 
 from bs4 import BeautifulSoup
+import indexer
+import re
 
 class Parser():
-    def __init__(self, master, urlfilter, pagearchive):
+    def __init__(self, master, urlfilter, pagearchive, indexer):
         self.master = master
         self.urlfilter = urlfilter
         self.pagearchive = pagearchive
+        self.indexer = indexer
+        self.indexable_types = ['.txt','.htm','.html','.php']
 
     def extractUrls(self, soup):
         for a in soup.find_all('a', href=True):
@@ -25,23 +29,36 @@ class Parser():
         for i in range(len(texts)):
             texts[i] = texts[i].replace('\n',' ')
             texts[i] = texts[i].replace('\r',' ')
-            #texts[i] = texts[i].replace(' ','')
         return texts
 
-    def parse(self, page):
-        soup = BeautifulSoup(page, 'lxml')
+    def isIndexablePage(self, url):
+        for t in self.indexable_types:
+            if t in url or t.upper() in url:
+                return True
+        return False
+
+    def parse(self, pageHtml, url):
+        soup = BeautifulSoup(pageHtml, 'lxml')
         soup.prettify()
-        texts = soup.findAll(text=True)
-        texts = list(filter(self.contentVet, texts))
-        texts = self.cleanContent(texts)
-        content = ' '.join(texts)
-        # return if content is whitespace
-        if content is None or content =='' or content.isspace():
-            return
-        # return if content is duplicate
-        if self.pagearchive.isDuplContent(content):
-            return
-        # archive new content
-        else:
-            self.pagearchive.addPage(content)
         self.extractUrls(soup)
+        if self.isIndexablePage(url):
+            texts = soup.findAll(text=True)
+            texts = list(filter(self.contentVet, texts))
+            texts = self.cleanContent(texts)
+
+            content = ' '.join(texts)
+            # return if content is whitespace
+            if content is None or content =='' or content.isspace():
+                return
+            # return if content is duplicate
+            if self.pagearchive.isDuplContent(content):
+                print("DUPLICATE FOUND AT: {}".format(url))
+                return
+            # archive new content + split into words for indexing
+            else:
+                self.pagearchive.addPage(url, content)
+                # split content into words and index document
+                low = lambda x: x.lower()
+                words = re.compile(r'[A-z][^.?!\s]*[A-z\d]\b').findall(content)
+                words = list(map(low,words))
+                self.indexer.indexDoc(words, url)
