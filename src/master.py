@@ -133,7 +133,6 @@ def outputResults(master):
     prettyPrint(master.imageFiles, "image files")
     prettyPrint(master.outgoingLinks, "outgoing links")
     prettyPrint(master.duplicateLinks, "duplicate links")
-    prettyPrint(master.pageArchive.archive, "page archive")
     prettyPrint(master.indexer.getNMostFrequent(20), "20 most frequent (word,tf,df)")
 
 
