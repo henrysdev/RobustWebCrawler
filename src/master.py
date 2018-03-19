@@ -107,13 +107,15 @@ def outputResults(master):
 def main(args):
     if len(args) != 2:
         print("incorrect arguments. exiting...")
+        return 1
     N = int(args[1])
     seedset = ["https://s2.smu.edu/~fmoore/"]
     master = MasterNode(seedset)
     master.run(N)
     outputResults(master)
+    return 0
 
 
 if __name__ == "__main__":
-    main(sys.argv)
+    exit(main(sys.argv))
     

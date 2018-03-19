@@ -9,10 +9,7 @@ class Indexer():
 
     # add entries to term frequency matrix via nested dictionaries
     def indexDoc(self, words, url):
-        print("indexing: {}\nword count: {}".format(url, len(words)))
-        print("words: {}".format(words))
         if len(words) == 0:
-            print("no words to index")
             return
         docId = "doc"+str(self.docNum)
         self.termFreqMatrix[docId] = {}
@@ -29,9 +26,7 @@ class Indexer():
     # them as tuples
     def getNMostFrequent(self, N, mode="tf"):
         if mode not in ["tf", "df"]:
-            print("invalid mode passed to getNMostFrequent. Returning")
             return
-
         allWords = {}
         for doc in self.termFreqMatrix:
             for word in self.termFreqMatrix[doc]:
@@ -51,7 +46,6 @@ class Indexer():
             rankedWords.append((word,allWords[word]))
 
         rankedWords.sort(key=lambda x: x[1], reverse=True)
-
         if N > len(rankedWords):
             return rankedWords
         else:
