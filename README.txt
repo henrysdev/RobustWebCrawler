@@ -42,3 +42,6 @@ OUTPUT
 1. Observe the program output in the console. This information pertains to 
 the questions posed in the project requirements.
 2. Observe the term-frequency matrix in the csv file named "term-frequency.csv".
+This file can be found in the directory "out" located in the "src" folder.
+
+matrix output location: /src/out/term-frequency.csv

@@ -58,7 +58,7 @@ class Indexer():
     # or document-frequency) in the saved matrix and return
     # them as tuples
     def getNMostFrequent(self, N):
-        self.matrixToCsv('term-frequency.csv')
+        self.matrixToCsv('out/term-frequency.csv')
         allWords = {}
         allWords["tf"] = {}
         allWords["df"] = {}
