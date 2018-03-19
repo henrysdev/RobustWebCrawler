@@ -31,7 +31,8 @@ class Parser():
         return False
 
 
-    # parse robots.txt file for rules
+    # parse robots.txt file for rules, then set them in master
+    # as key-value tuples
     def extractRules(self, soup):
         texts = soup.findAll(text=True)
         content = ' '.join(texts)
@@ -39,7 +40,7 @@ class Parser():
         for line in content.splitlines():
             if line[0] == "#":
                 continue
-            kvPair = line.split(':')
+            kvPair = line.replace(' ','').split(':')
             rules.append((kvPair[0],kvPair[1]))
         self.master.setCrawlRules(rules)
 

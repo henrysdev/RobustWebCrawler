@@ -10,21 +10,13 @@ class Spider():
         self.userAgent = userAgent
 
 
+    # proper member method for setting UA
     def setUserAgent(self, userAgent):
         self.userAgent = userAgent
 
 
     # open webpage url and return html source
     def webpageToHtml(self, url):
-        """
-        try:
-            page = urlopen(url).read()
-        except:
-            print('failed to open URL: {}'.format(url))
-            self.master.reportBroken(url)
-            return None
-        return page
-        """
         req = urllib.request.Request(
             url, 
             data=None, 
@@ -32,7 +24,6 @@ class Spider():
                 'User-Agent': self.userAgent
             }
         )
-
         try:
             page = urllib.request.urlopen(req).read()
         except:
@@ -40,7 +31,6 @@ class Spider():
             self.master.reportBroken(url)
             return None
         return page
-        #print(f.read().decode('utf-8'))
 
 
     # obtain html source and pass to parser

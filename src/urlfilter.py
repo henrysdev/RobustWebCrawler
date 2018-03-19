@@ -16,6 +16,7 @@ class UrlFilter():
     # add a restricted path (found from robots.txt)
     def addRestrictedPath(self, path):
         self.restrictedPaths.append(path)
+        print("restricted paths: {}".format(self.restrictedPaths))
 
 
     # determine if passed url has been found already
@@ -52,13 +53,12 @@ class UrlFilter():
     def vetUrl(self, url):
         for baseUrl in self.seedSet:
             tmpUrl = url
-            # throw away link if disallowed access (adhering to robots.txt)
-            if self.isRestrictedUrl(url):
-                print("CRAWLING FORBIDDEN: {}".format(url))
-                return
-            # if href link is relative link, change to definite link
+            # if href link is a relative link, make it an absolute link
             if tmpUrl[:4] != "http":
                 tmpUrl = "{}{}".format(baseUrl, tmpUrl)
+            # throw away link if disallowed access (adhering to robots.txt)
+            if self.isRestrictedUrl(tmpUrl):
+                return
             # continue only if url is within the domain we are scraping
             if tmpUrl.startswith(baseUrl) or baseUrl[5:] in tmpUrl:
                 if self.isImageFile(tmpUrl):

@@ -26,6 +26,7 @@ class MasterNode():
                              self.pageArchive,
                              self.indexer)
         self.spider = Spider(self, self.parser)
+        self.crawlDelay = 1
         self.crawlRules = []
         self.testDataLinks = []
         self.duplicateLinks = []
@@ -34,27 +35,32 @@ class MasterNode():
         self.outgoingLinks = []
 
 
+    # set crawling rules found in robots.txt
     def setCrawlRules(self, rules):
         for r in rules:
             self.crawlRules.append((r[0],r[1]))
         for pair in self.crawlRules:
-            key = pair[0]
-            val = pair[1]
+            key, val = pair
             if key == "Disallow":
                 print("add restricted path: {}:{}".format(key,val))
                 self.urlFilter.addRestrictedPath(val)
             if key == "User-agent":
                 print("set user agent: {}:{}".format(key,val))
                 self.spider.setUserAgent(val)
+            if key == "Crawl-delay":
+                print("set crawl delay: {}:{}".format(key,val))
+                self.master.crawlDelay = val
 
 
     # try to find robots.txt
     def findRobotRules(self):
         for seedUrl in self.seedSet:
-            robotsUrl = "{}/{}".format(seedUrl, 
+            robotsUrl = "{}{}".format(seedUrl, 
                                        "robots.txt")
             html = self.spider.crawl(robotsUrl, 
                                      rtnHtml=True)
+        if len(self.crawlRules) == 0:
+            print("no ")
 
 
     # master program loop will run until page limit is reached
@@ -69,7 +75,7 @@ class MasterNode():
                 self.spider.crawl(url)
                 i+=1
                 print("i", i)
-                sleep(2)
+                sleep(self.crawlDelay)
             else:
                 print("hit page limit {}".format(N))
                 return
@@ -132,7 +138,7 @@ def main(args):
         print("incorrect arguments. exiting...")
         return 1
     N = int(args[1])
-    seedset = ["https://lyle.smu.edu/~fmoore"]
+    seedset = ["https://lyle.smu.edu/~fmoore/"]
     master = MasterNode(seedset)
     master.run(N)
     outputResults(master)
