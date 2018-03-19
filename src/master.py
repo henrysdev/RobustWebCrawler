@@ -120,11 +120,13 @@ class MasterNode():
 def outputResults(master):
     def prettyPrint(list_, name="list"):
         print("\n[{}]".format(name.upper()))
+        i = 1
         for _ in list_:
             if type(list_) == list:
-                print("{}".format(_))
+                print("{}. {}".format(i,_))
             elif type(list_) == dict:
                 print("{}[{}]:{}".format(list_,_,list_[_]))
+            i+=1
         print("\n")
 
     prettyPrint(master.brokenLinks, "broken links")
@@ -132,8 +134,7 @@ def outputResults(master):
     prettyPrint(master.outgoingLinks, "outgoing links")
     prettyPrint(master.duplicateLinks, "duplicate links")
     prettyPrint(master.pageArchive.archive, "page archive")
-    prettyPrint(master.indexer.getNMostFrequent(20, "tf"), "20 most frequent (term frequency)")
-    prettyPrint(master.indexer.getNMostFrequent(20, "df"), "20 most frequent (doc frequency)")
+    prettyPrint(master.indexer.getNMostFrequent(20), "20 most frequent (word,tf,df)")
 
 
 # load stop words from file
