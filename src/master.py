@@ -4,37 +4,13 @@
 from bs4 import BeautifulSoup
 from time import sleep
 import sys
-from queue import *
 
 from spider import Spider
 from parser import Parser
 from urlfilter import UrlFilter
 from pagearchive import PageArchive
 from indexer import Indexer
-
-
-# queue (FIFO) for holding found urls to be crawled
-class UrlFrontier():
-    def __init__(self, seedSet):
-        self.urlQueue = Queue()
-        for url in seedSet:
-            self.urlQueue.put(url)
-        print(self.urlQueue)
-
-
-    # add item to (the back of the) queue
-    def put(self, url):
-        self.urlQueue.put(url)
-
-
-    # pop and return next item in the queue
-    def get(self):
-        return self.urlQueue.get()
-
-
-    # check if queue is empty
-    def isEmpty(self):
-        return self.urlQueue.empty()
+from urlfrontier import UrlFrontier
 
 
 # managing object for controlling data flow in the crawler 
