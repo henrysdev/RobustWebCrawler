@@ -78,12 +78,19 @@ class MasterNode():
 
 # print out results report for crawler upon completion of execution
 def outputResults(master):
-    print("broken links: {}".format(master.brokenLinks))
-    print("image files: {}".format(master.imageFiles))
-    print("outgoing links: {}".format(master.outgoingLinks))
-    print("page archive: {}".format(master.pageArchive.archive))
-    print("most frequent 20 words (tf): {}".format(master.indexer.getNMostFrequent(20,"tf")))
-    print("most frequent 20 words (df): {}".format(master.indexer.getNMostFrequent(20,"df")))
+    def prettyPrint(list_, name="list"):
+        print("[{}]\n".format(name.upper()))
+        for _ in list_:
+            if type(list_) == list:
+                print("{}".format(_))
+            elif type(list_) == dict:
+                print("{}[{}]:{}".format(list_,_,list_[_]))
+
+    prettyPrint(master.brokenLinks, "broken links")
+    prettyPrint(master.imageFiles, "image files")
+    prettyPrint(master.outgoingLinks, "outgoing links")
+    prettyPrint(master.pageArchive.archive, "page archive")
+    prettyPrint(master.indexer.getNMostFrequent(20, "df"), "20 most frequent (document frequency)")
 
 
 # init function for running crawler program

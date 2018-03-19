@@ -24,7 +24,7 @@ class Indexer():
     # find N most frequent words (by either term-frequency
     # or document-frequency) in the saved matrix and return
     # them as tuples
-    def getNMostFrequent(self, N, mode="tf"):
+    def getNMostFrequent(self, N, mode="df"):
         if mode not in ["tf", "df"]:
             return
         allWords = {}
