@@ -1,16 +1,22 @@
 # Henry Warren 2018
 # hwarren@smu.edu
 
-from urllib.request import urlopen
+import urllib.request
 
 class Spider():
-    def __init__(self, master, parser):
+    def __init__(self, master, parser, userAgent="*"):
         self.master = master
         self.parser = parser
+        self.userAgent = userAgent
+
+
+    def setUserAgent(self, userAgent):
+        self.userAgent = userAgent
 
 
     # open webpage url and return html source
     def webpageToHtml(self, url):
+        """
         try:
             page = urlopen(url).read()
         except:
@@ -18,10 +24,30 @@ class Spider():
             self.master.reportBroken(url)
             return None
         return page
+        """
+        req = urllib.request.Request(
+            url, 
+            data=None, 
+            headers={
+                'User-Agent': self.userAgent
+            }
+        )
+
+        try:
+            page = urllib.request.urlopen(req).read()
+        except:
+            print('failed to open URL: {}'.format(url))
+            self.master.reportBroken(url)
+            return None
+        return page
+        #print(f.read().decode('utf-8'))
 
 
     # obtain html source and pass to parser
-    def crawl(self, url):
+    def crawl(self, url, rtnHtml=False):
         content = self.webpageToHtml(url)
         if content is not None:
-            self.parser.parse(content, url)
+            if rtnHtml:
+                self.parser.parse(content, url, robots=True)
+            else:
+                self.parser.parse(content, url)

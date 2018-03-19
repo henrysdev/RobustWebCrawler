@@ -26,6 +26,7 @@ class MasterNode():
                              self.pageArchive,
                              self.indexer)
         self.spider = Spider(self, self.parser)
+        self.crawlRules = []
         self.testDataLinks = []
         self.duplicateLinks = []
         self.brokenLinks = []
@@ -33,9 +34,33 @@ class MasterNode():
         self.outgoingLinks = []
 
 
+    def setCrawlRules(self, rules):
+        for r in rules:
+            self.crawlRules.append((r[0],r[1]))
+        for pair in self.crawlRules:
+            key = pair[0]
+            val = pair[1]
+            if key == "Disallow":
+                print("add restricted path: {}:{}".format(key,val))
+                self.urlFilter.addRestrictedPath(val)
+            if key == "User-agent":
+                print("set user agent: {}:{}".format(key,val))
+                self.spider.setUserAgent(val)
+
+
+    # try to find robots.txt
+    def findRobotRules(self):
+        for seedUrl in self.seedSet:
+            robotsUrl = "{}/{}".format(seedUrl, 
+                                       "robots.txt")
+            html = self.spider.crawl(robotsUrl, 
+                                     rtnHtml=True)
+
+
     # master program loop will run until page limit is reached
     # or the url frontier is empty
     def run(self, N):
+        self.findRobotRules()
         i = 0
         while self.urlFront.isEmpty() == False:
             if i < N:
@@ -107,7 +132,7 @@ def main(args):
         print("incorrect arguments. exiting...")
         return 1
     N = int(args[1])
-    seedset = ["https://lyle.smu.edu/~fmoore/"]
+    seedset = ["https://lyle.smu.edu/~fmoore"]
     master = MasterNode(seedset)
     master.run(N)
     outputResults(master)

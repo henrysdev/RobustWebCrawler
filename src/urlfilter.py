@@ -54,7 +54,7 @@ class UrlFilter():
             tmpUrl = url
             # throw away link if disallowed access (adhering to robots.txt)
             if self.isRestrictedUrl(url):
-                print("scraping not permmitted at this location")
+                print("CRAWLING FORBIDDEN: {}".format(url))
                 return
             # if href link is relative link, change to definite link
             if tmpUrl[:4] != "http":

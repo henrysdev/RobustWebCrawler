@@ -31,11 +31,27 @@ class Parser():
         return False
 
 
+    # parse robots.txt file for rules
+    def extractRules(self, soup):
+        texts = soup.findAll(text=True)
+        content = ' '.join(texts)
+        rules = []
+        for line in content.splitlines():
+            if line[0] == "#":
+                continue
+            kvPair = line.split(':')
+            rules.append((kvPair[0],kvPair[1]))
+        self.master.setCrawlRules(rules)
+
+
     # inspect and extract elements from html source such as
     # links to other pages and text to be indexed
-    def parse(self, pageHtml, url):
+    def parse(self, pageHtml, url, robots=False):
         soup = BeautifulSoup(pageHtml, 'lxml')
         soup.prettify()
+        if robots == True:
+            self.extractRules(soup)
+            return
         self.extractUrls(soup)
         if self.isIndexablePage(url):
             texts = soup.findAll(text=True)
