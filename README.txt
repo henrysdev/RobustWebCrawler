@@ -31,7 +31,7 @@ EXECUTION
 containing all the python (.py) source files.
 2. Run the following command:
 
-$ python3 master.py 100
+$ python3 master.py 100 stopwords.txt
 
 (note that 100 is an example value for input argument N, the parameter that 
 limits the number of pages our crawler will visit before exiting)

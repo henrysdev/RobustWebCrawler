@@ -57,27 +57,27 @@ class Indexer():
     # find N most frequent words (by either term-frequency
     # or document-frequency) in the saved matrix and return
     # them as tuples
-    def getNMostFrequent(self, N, mode="tf"):
-        self.matrixToCsv('out.csv')
+    def getNMostFrequent(self, N, mode="df"):
+        self.matrixToCsv('term-frequency.csv')
         if mode not in ["tf", "df"]:
             return
         allWords = {}
+        allWords["tf"] = {}
+        allWords["df"] = {}
         for doc in self.tfMatrix:
             for word in self.tfMatrix[doc]:
-                if word in allWords:
-                    if mode == "tf":
-                        allWords[word] += self.tfMatrix[doc][word]
-                    if mode == "df":
-                        allWords[word] += 1
-                else:
-                    if mode == "tf":
-                        allWords[word] = self.tfMatrix[doc][word]
-                    if mode == "df":
-                        allWords[word] = 1
+                if word in allWords["tf"]:
+                    allWords["tf"][word] += self.tfMatrix[doc][word]
+                if word in allWords["df"]:
+                    allWords["df"][word] += 1
+                if word not in allWords["tf"]:
+                    allWords["tf"][word] = self.tfMatrix[doc][word]
+                if word not in allWords["df"]:
+                    allWords["df"][word] = 1
 
         rankedWords = []
-        for word in allWords:
-            rankedWords.append((word,allWords[word]))
+        for word in allWords[mode]:
+            rankedWords.append((word,allWords[mode][word]))
 
         rankedWords.sort(key=lambda x: x[1], reverse=True)
         if N > len(rankedWords):

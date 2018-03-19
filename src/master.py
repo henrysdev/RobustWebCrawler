@@ -132,7 +132,8 @@ def outputResults(master):
     prettyPrint(master.outgoingLinks, "outgoing links")
     prettyPrint(master.duplicateLinks, "duplicate links")
     prettyPrint(master.pageArchive.archive, "page archive")
-    prettyPrint(master.indexer.getNMostFrequent(20, "df"), "20 most frequent (document frequency)")
+    prettyPrint(master.indexer.getNMostFrequent(20, "tf"), "20 most frequent (term frequency)")
+    prettyPrint(master.indexer.getNMostFrequent(20, "df"), "20 most frequent (doc frequency)")
 
 
 # load stop words from file
