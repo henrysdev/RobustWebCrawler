@@ -13,7 +13,7 @@ from pagearchive import PageArchive
 from indexer import Indexer
 
 
-# queue for holding found urls to be crawled
+# queue (FIFO) for holding found urls to be crawled
 class UrlFrontier():
     def __init__(self, seedSet):
         self.urlQueue = Queue()
@@ -22,14 +22,17 @@ class UrlFrontier():
         print(self.urlQueue)
 
 
+    # add item to (the back of the) queue
     def put(self, url):
         self.urlQueue.put(url)
 
 
+    # pop and return next item in the queue
     def get(self):
         return self.urlQueue.get()
 
 
+    # check if queue is empty
     def isEmpty(self):
         return self.urlQueue.empty()
 
@@ -41,7 +44,7 @@ class MasterNode():
         self.urlFront = UrlFrontier(seedSet)
         self.pageArchive = PageArchive()
         self.urlFilter = UrlFilter(self)
-        self.indexer = Indexer(self)
+        self.indexer = Indexer()
         self.parser = Parser(self, 
                              self.urlFilter, 
                              self.pageArchive,
@@ -52,6 +55,8 @@ class MasterNode():
         self.outgoingLinks = []
 
 
+    # master program loop will run until page limit is reached
+    # or the url frontier is empty
     def run(self, N):
         i = 0
         while self.urlFront.isEmpty() == False:
@@ -63,25 +68,32 @@ class MasterNode():
                 print("i", i)
                 sleep(2)
             else:
+                print("hit page limit {}".format(N))
                 return
+        print("ran out of URLs to hit")
 
 
+    # add url to the master node's url frontier
     def addToFront(self, url):
         self.urlFront.put(url)
 
 
+    # add broken link to broken links cache
     def reportBroken(self, url):
         self.brokenLinks.append(url)
 
 
+    # add image file to image files cache
     def reportImage(self, url):
         self.imageFiles.append(url)
 
 
+    # add outgoing link to outgoing links cache
     def reportOutgoing(self, url):
         self.outgoingLinks.append(url)
 
 
+# print out results report for crawler upon completion of execution
 def outputResults(master):
     print("broken links: {}".format(master.brokenLinks))
     print("image files: {}".format(master.imageFiles))
@@ -91,6 +103,7 @@ def outputResults(master):
     print("most frequent 20 words (df): {}".format(master.indexer.getNMostFrequent(20,"df")))
 
 
+# init function for running crawler program
 def main(args):
     if len(args) != 2:
         print("incorrect arguments. exiting...")

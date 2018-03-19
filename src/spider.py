@@ -9,6 +9,7 @@ class Spider():
         self.parser = parser
 
 
+    # open webpage url and return html source
     def webpageToHtml(self, url):
         try:
             page = urlopen(url).read()
@@ -19,8 +20,8 @@ class Spider():
         return page
 
 
+    # obtain html source and pass to parser
     def crawl(self, url):
-        # TODO optimize time complexity
         content = self.webpageToHtml(url)
         if content is not None:
             self.parser.parse(content, url)

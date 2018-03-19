@@ -2,12 +2,12 @@
 # hwarren@smu.edu
 
 class Indexer():
-    def __init__(self, master):
-        self.master = master
+    def __init__(self):
         self.termFreqMatrix = {}
         self.docNum = 0
 
 
+    # add entries to term frequency matrix via nested dictionaries
     def indexDoc(self, words, url):
         print("indexing: {}\nword count: {}".format(url, len(words)))
         print("words: {}".format(words))
@@ -24,6 +24,9 @@ class Indexer():
         self.docNum += 1
 
 
+    # find N most frequent words (by either term-frequency
+    # or document-frequency) in the saved matrix and return
+    # them as tuples
     def getNMostFrequent(self, N, mode="tf"):
         if mode not in ["tf", "df"]:
             print("invalid mode passed to getNMostFrequent. Returning")

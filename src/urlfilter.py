@@ -13,17 +13,19 @@ class UrlFilter():
         self.restrictedPaths = []
 
 
+    # add a restricted path (found from robots.txt)
     def addRestrictedPath(self, path):
         self.restrictedPaths.append(path)
 
 
+    # determine if passed url has been found already
     def isDuplicate(self, url):
         if url not in self.foundUrls:
             return False
         else:
             return True
 
-
+    # determine if passed url is path to an image file
     def isImageFile(self, url):
         for ftype in self.imgTypes:
             if url.endswith(ftype) or url.endswith(ftype.upper()):
@@ -31,6 +33,7 @@ class UrlFilter():
         return False
 
 
+    # determine if passed url is path to a pdf file
     def isPdfFile(self, url):
         if url.endswith('.pdf') or url.endswith('.PDF'):
             return True
@@ -38,6 +41,7 @@ class UrlFilter():
             return False
 
 
+    # determine if passed url is in a restricted path
     def isRestrictedUrl(self, url):
         for fdir in self.restrictedPaths:
             if fdir in url:
@@ -45,12 +49,14 @@ class UrlFilter():
         return False
 
 
+    # add url to url frontier
     def addUrl(self, url):
         timestamp = time.time()
         self.foundUrls[url] = timestamp
         self.master.addToFront(url)
 
 
+    # filter found urls and add eligible links to the url frontier
     def vetUrl(self, url):
         for baseUrl in self.seedSet:
             tmpUrl = url
@@ -80,4 +86,4 @@ class UrlFilter():
                     else:
                         return
             else:
-                master.reportOutgoing(url)
+                self.master.reportOutgoing(url)
