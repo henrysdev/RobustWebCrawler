@@ -107,7 +107,7 @@ def main(args):
         print("incorrect arguments. exiting...")
         return 1
     N = int(args[1])
-    seedset = ["https://s2.smu.edu/~fmoore/"]
+    seedset = ["https://lyle.smu.edu/~fmoore/"]
     master = MasterNode(seedset)
     master.run(N)
     outputResults(master)
