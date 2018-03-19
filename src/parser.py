@@ -7,12 +7,12 @@ import indexer
 from tokenizer import Tokenizer
 
 class Parser():
-    def __init__(self, master, urlfilter, pagearchive, indexer):
+    def __init__(self, master, urlfilter, pagearchive, indexer, stopWords):
         self.master = master
         self.urlfilter = urlfilter
         self.pagearchive = pagearchive
         self.indexer = indexer
-        self.tokenizer = Tokenizer()
+        self.tokenizer = Tokenizer(stopWords)
         self.indexable_types = ['.txt','.htm','.html','.php']
 
 
@@ -28,6 +28,12 @@ class Parser():
         for t in self.indexable_types:
             if t in url or t.upper() in url:
                 return True
+        return False
+
+
+    def isPdfFile(self, url):
+        if url.endswith('.pdf') or url.endswith('.PDF'):
+            return True
         return False
 
 
@@ -48,6 +54,8 @@ class Parser():
     # inspect and extract elements from html source such as
     # links to other pages and text to be indexed
     def parse(self, pageHtml, url, robots=False):
+        if self.isPdfFile(url):
+            return
         soup = BeautifulSoup(pageHtml, 'lxml')
         soup.prettify()
         if robots == True:
@@ -63,6 +71,7 @@ class Parser():
                 return
             # return if content is duplicate
             if self.pagearchive.isDuplContent(content):
+                print(" FOUND DUPLICATE ")
                 self.master.reportDuplicate(url)
                 return
             # archive new content + split into words for indexing

@@ -15,16 +15,19 @@ from urlfrontier import UrlFrontier
 
 # managing object for controlling data flow in the crawler 
 class MasterNode():
-    def __init__(self, seedSet):
+    def __init__(self, seedSet, stopWords):
         self.seedSet = seedSet
+        self.stopWords = stopWords
         self.urlFront = UrlFrontier(seedSet)
         self.pageArchive = PageArchive()
         self.urlFilter = UrlFilter(self)
         self.indexer = Indexer()
         self.parser = Parser(self, 
                              self.urlFilter, 
-                             self.pageArchive,
-                             self.indexer)
+                             self.pageArchive, 
+                             self.indexer, 
+                             self.stopWords
+                             )
         self.spider = Spider(self, self.parser)
         self.crawlDelay = 1
         self.crawlRules = []
@@ -42,13 +45,13 @@ class MasterNode():
         for pair in self.crawlRules:
             key, val = pair
             if key == "Disallow":
-                print("add restricted path: {}:{}".format(key,val))
+                print("{}:{}".format(key,val))
                 self.urlFilter.addRestrictedPath(val)
             if key == "User-agent":
-                print("set user agent: {}:{}".format(key,val))
+                print("{}:{}".format(key,val))
                 self.spider.setUserAgent(val)
             if key == "Crawl-delay":
-                print("set crawl delay: {}:{}".format(key,val))
+                print("{}:{}".format(key,val))
                 self.master.crawlDelay = val
 
 
@@ -132,14 +135,30 @@ def outputResults(master):
     prettyPrint(master.indexer.getNMostFrequent(20, "df"), "20 most frequent (document frequency)")
 
 
+# load stop words from file
+def loadStopWords(path):
+    try:
+        stopWords = []
+        with open(path, encoding='utf-8') as f:
+            for line in f.read().splitlines():
+                stopWords.append(line)
+        f.close()
+        return stopWords
+    except:
+        print("unable to open stopwords file")
+        return None
+
+
 # init function for running crawler program
 def main(args):
-    if len(args) != 2:
+    if len(args) != 3:
         print("incorrect arguments. exiting...")
         return 1
     N = int(args[1])
-    seedset = ["https://lyle.smu.edu/~fmoore/"]
-    master = MasterNode(seedset)
+    stopWordsFile = args[2]
+    stopWords = loadStopWords(stopWordsFile)
+    seedSet = ["https://lyle.smu.edu/~fmoore/"]
+    master = MasterNode(seedSet, stopWords)
     master.run(N)
     outputResults(master)
     return 0

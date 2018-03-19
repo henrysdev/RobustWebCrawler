@@ -9,7 +9,6 @@ class UrlFrontier():
         self.urlQueue = Queue()
         for url in seedSet:
             self.urlQueue.put(url)
-        print(self.urlQueue)
 
 
     # add item to (the back of the) queue

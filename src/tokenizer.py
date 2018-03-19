@@ -5,17 +5,9 @@ from bs4 import BeautifulSoup
 import re
 
 
-STOPWORDS = ["a","about","an","and","are","as", 
-             "at","be","by","com","for","from", 
-             "how","i","in","is","it","of","on", 
-             "or","that","the","this","to","was", 
-             "what","when","where","who","will", 
-             "with","then","www"]
-
-
 class Tokenizer():
-    def __init__(self, stopwords=STOPWORDS):
-        self.stopwords = stopwords
+    def __init__(self, stopWords):
+        self.stopWords = stopWords
 
 
     # filter function for determining if text contains newline element
@@ -36,14 +28,14 @@ class Tokenizer():
 
     # filter function for determining if token is a stopword
     def isStopword(self, token):
-        if token in self.stopwords:
+        if token in self.stopWords:
             return False
         else:
             return True
 
 
     # given a list of text fragments, break into individual words,
-    # normalize via tokenization and remove stopwords.
+    # normalize via tokenization and remove stop words.
     def processText(self, texts):
         texts = list(filter(self.contentVet, texts))
         texts = self.cleanContent(texts)
@@ -51,6 +43,6 @@ class Tokenizer():
         content = ' '.join(texts)
         # find all words in text string and store them in a words list
         words = re.compile(r'[A-z][^.?!\s]*[A-z\d]\b').findall(content)
-        # cast all words in words list to lowercase, then filter out the stopwords
+        # cast all words in words list to lowercase, then filter out the stop words
         tokens = filter(self.isStopword,(map(lambda x: x.lower(),words)))
         return list(tokens)

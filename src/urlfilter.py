@@ -21,10 +21,9 @@ class UrlFilter():
 
     # determine if passed url has been found already
     def isDuplicate(self, url):
-        if url not in self.foundUrls:
-            return False
-        else:
+        if url in self.foundUrls:
             return True
+        return False
 
     # determine if passed url is path to an image file
     def isImageFile(self, url):
@@ -61,9 +60,11 @@ class UrlFilter():
                 return
             # continue only if url is within the domain we are scraping
             if tmpUrl.startswith(baseUrl) or baseUrl[5:] in tmpUrl:
+                # log if page is an image file
                 if self.isImageFile(tmpUrl):
                     self.master.reportImage(tmpUrl)
                     return
+                # add url to frontier if not a duplicate
                 if self.isDuplicate(tmpUrl) == False:
                     self.addUrl(tmpUrl)
                 else:
