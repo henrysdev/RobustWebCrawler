@@ -33,14 +33,6 @@ class UrlFilter():
         return False
 
 
-    # determine if passed url is path to a pdf file
-    def isPdfFile(self, url):
-        if url.endswith('.pdf') or url.endswith('.PDF'):
-            return True
-        else:
-            return False
-
-
     # determine if passed url is in a restricted path
     def isRestrictedUrl(self, url):
         for fdir in self.restrictedPaths:
@@ -60,10 +52,6 @@ class UrlFilter():
     def vetUrl(self, url):
         for baseUrl in self.seedSet:
             tmpUrl = url
-            # throw away link if pdf file (cant be parsed as html)
-            if self.isPdfFile(url):
-                print("pdf files cannot be easily parsed with html")
-                return
             # throw away link if disallowed access (adhering to robots.txt)
             if self.isRestrictedUrl(url):
                 print("scraping not permmitted at this location")

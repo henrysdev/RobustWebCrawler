@@ -50,6 +50,7 @@ class MasterNode():
                              self.pageArchive,
                              self.indexer)
         self.spider = Spider(self, self.parser)
+        self.testDataLinks = []
         self.brokenLinks = []
         self.imageFiles = []
         self.outgoingLinks = []
@@ -73,8 +74,14 @@ class MasterNode():
         print("ran out of URLs to hit")
 
 
+    # add url to test data links cache
+    def reportTestData(self, url):
+        self.testDataLinks.append(url)
+
+
     # add url to the master node's url frontier
     def addToFront(self, url):
+        self.testDataLinks.append(url)
         self.urlFront.put(url)
 
 

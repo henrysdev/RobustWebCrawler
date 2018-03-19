@@ -47,7 +47,10 @@ class Tokenizer():
     def processText(self, texts):
         texts = list(filter(self.contentVet, texts))
         texts = self.cleanContent(texts)
+        # join all text fragments together in order to parse as one long string
         content = ' '.join(texts)
+        # find all words in text string and store them in a words list
         words = re.compile(r'[A-z][^.?!\s]*[A-z\d]\b').findall(content)
+        # cast all words in words list to lowercase, then filter out the stopwords
         tokens = filter(self.isStopword,(map(lambda x: x.lower(),words)))
         return list(tokens)
