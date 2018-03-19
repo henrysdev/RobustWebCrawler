@@ -46,6 +46,7 @@ class Parser():
                 return
             # return if content is duplicate
             if self.pagearchive.isDuplContent(content):
+                self.master.reportDuplicate(url)
                 return
             # archive new content + split into words for indexing
             else:

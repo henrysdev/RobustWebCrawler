@@ -60,7 +60,7 @@ class UrlFilter():
             if tmpUrl[:4] != "http":
                 tmpUrl = "{}{}".format(baseUrl, tmpUrl)
             # continue only if url is within the domain we are scraping
-            if tmpUrl.startswith(baseUrl):
+            if tmpUrl.startswith(baseUrl) or baseUrl[5:] in tmpUrl:
                 if self.isImageFile(tmpUrl):
                     self.master.reportImage(tmpUrl)
                     return
@@ -74,4 +74,4 @@ class UrlFilter():
                     else:
                         return
             else:
-                self.master.reportOutgoing(url)
+                self.master.reportOutgoing(tmpUrl)
