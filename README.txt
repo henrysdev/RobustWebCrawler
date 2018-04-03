@@ -1,11 +1,3 @@
-*************************
-*	Web Crawler	*
-*  CSE 5337 Project #1  *
-*     Henry Warren      *
-*    hwarren@smu.edu    *
-*************************
-
-
 OVERVIEW
 - Program written entirely in Python 3.6
 - Non-standard libraries used:
