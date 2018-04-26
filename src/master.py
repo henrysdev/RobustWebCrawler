@@ -68,14 +68,17 @@ class MasterNode():
 
     # master program loop will run until page limit is reached
     # or the url frontier is empty
-    def run(self, N):
+    def run(self, N, titleMode=False):
         self.findRobotRules()
         i = 0
         while self.urlFront.isEmpty() == False:
             if i < N:
                 url = self.urlFront.get()
                 print("curr URL: {}".format(url))
-                self.spider.crawl(url)
+                if titleMode == True:
+                    self.spider.crawl(url, titleMode=True)
+                else:
+                    self.spider.crawl(url)
                 i+=1
                 print("i", i)
                 sleep(self.crawlDelay)
@@ -160,11 +163,10 @@ def main(args):
     stopWords = loadStopWords(stopWordsFile)
     seedSet = ["https://lyle.smu.edu/~fmoore/"]
     master = MasterNode(seedSet, stopWords)
-    master.run(N)
+    master.run(N, titleMode=True)
     outputResults(master)
     return 0
 
 
 if __name__ == "__main__":
     exit(main(sys.argv))
-    

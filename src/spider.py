@@ -34,10 +34,10 @@ class Spider():
 
 
     # obtain html source and pass to parser
-    def crawl(self, url, rtnHtml=False):
+    def crawl(self, url, rtnHtml=False, titleMode=False):
         content = self.webpageToHtml(url)
         if content is not None:
             if rtnHtml:
-                self.parser.parse(content, url, robots=True)
+                self.parser.parse(content, url, robots=True, titleMode=titleMode)
             else:
-                self.parser.parse(content, url)
+                self.parser.parse(content, url, titleMode=titleMode)

@@ -53,7 +53,7 @@ class Parser():
 
     # inspect and extract elements from html source such as
     # links to other pages and text to be indexed
-    def parse(self, pageHtml, url, robots=False):
+    def parse(self, pageHtml, url, robots=False, titleMode=False):
         if self.isPdfFile(url):
             return
         soup = BeautifulSoup(pageHtml, 'lxml')
@@ -63,9 +63,14 @@ class Parser():
             return
         self.extractUrls(soup)
         if self.isIndexablePage(url):
+            title = "TITLE"
+            if titleMode:
+                title = soup.find('title').text
             texts = soup.findAll(text=True)
             tokens = self.tokenizer.processText(texts)
             content = ' '.join(tokens)
+            print("title: ", title)
+            print("texts: ", content)
             # return if content is whitespace
             if content is None or content =='' or content.isspace():
                 return
@@ -77,4 +82,4 @@ class Parser():
             else:
                 self.pagearchive.addPage(url, content)
                 # split content into words and index document
-                self.indexer.indexDoc(tokens, url)
+                self.indexer.indexDoc(tokens, url, title)

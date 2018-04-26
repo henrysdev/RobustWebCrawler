@@ -7,16 +7,18 @@ import sys
 class Indexer():
     def __init__(self):
         self.tfMatrix = {}
+        self.docUrls = {}
         self.docNum = 0
         self.allWords = []
 
 
     # add entries to term frequency matrix via nested 
     # dictionaries to simulate a 2-D array
-    def indexDoc(self, words, url):
+    def indexDoc(self, words, url, title):
         if len(words) == 0:
             return
-        docId = "Doc"+str(self.docNum)
+        docId = title
+        self.docUrls[docId] = url
         self.tfMatrix[docId] = {}
         for word in words:
             if word not in self.tfMatrix[docId]:
@@ -44,12 +46,12 @@ class Indexer():
     # output matrix to a .csv file
     def matrixToCsv(self, out):
         self.buildMatrix()
-        fields = ['DocID'] + self.allWords
+        fields = ['Document', 'Url'] + self.allWords
         with open(out, 'w') as f:
             w = csv.DictWriter(f, fields)
             w.writeheader()
             for key,val in sorted(self.tfMatrix.items()):
-                row = {'DocID': key}
+                row = {'Document': key, 'Url': self.docUrls[key]}
                 row.update(val)
                 w.writerow(row)
 
