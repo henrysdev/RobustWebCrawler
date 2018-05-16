@@ -65,9 +65,22 @@ class Parser():
         if self.isIndexablePage(url):
             title = "TITLE"
             if titleMode:
-                title = soup.find('title').text
+                try:
+                    title = soup.find('title').text
+                except:
+                    title = "NO_NAME_{}".format(self.master.currNoNameIndex)
+                    self.master.currNoNameIndex += 1
             texts = soup.findAll(text=True)
-            tokens = self.tokenizer.processText(texts)
+            try:
+                if "NO_NAME" in title:
+                    content = soup.find("p").contents[0]
+                    tokens = [x.lower() for x in content.split()]
+                    print("CONTENT: ", content)
+                    print("TOKENS: ", tokens)
+                else:
+                    tokens = self.tokenizer.processText(texts)
+            except:
+                print("")
             content = ' '.join(tokens)
             print("title: ", title)
             print("texts: ", content)
