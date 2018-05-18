@@ -29,13 +29,14 @@ class MasterNode():
                              self.stopWords
                              )
         self.spider = Spider(self, self.parser)
-        self.crawlDelay = 1
+        self.crawlDelay = 0.1
         self.crawlRules = []
         self.testDataLinks = []
         self.duplicateLinks = []
         self.brokenLinks = []
         self.imageFiles = []
         self.outgoingLinks = []
+        self.currNoNameIndex = 0
 
 
     # set crawling rules found in robots.txt
